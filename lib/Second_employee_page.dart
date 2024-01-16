@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'Database/db_helper.dart';
-import 'employee.dart';
+import 'model/employee.dart';
 import 'main.dart';
 class EmployeeDataLoader {
   final String apiEndpoint = 'https://reqres.in/api/users';

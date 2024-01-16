@@ -1,10 +1,13 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:vritti_techno_machinetest/screen/edit.dart';
 import 'package:vritti_techno_machinetest/screens/edit_employee_screen.dart';
 import 'Database/db_helper.dart';
 import 'Second_employee_page.dart';
-import 'employee.dart';
+import 'model/employee.dart';
+import 'model/user.dart';
+import 'my sqlite home page.dart';
 
 
 void main() {
@@ -190,7 +193,7 @@ class _EmployeeNamesTabState extends State<EmployeeNamesTab> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => EditEmployeeScreen(employee: employee),
+                              builder: (context) =>  MyHomePage(title: '',),
                             ),
                           );
                         },
@@ -238,7 +241,7 @@ class EmployeeDetailsTab extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => EditEmployeeScreen(employee: employee),
+                  builder: (context) => MyHomePage(title: '',),
                 ),
               );
             },
