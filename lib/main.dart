@@ -4,10 +4,16 @@ import 'package:http/http.dart' as http;
 import 'package:vritti_techno_machinetest/screens/edit_employee_screen.dart';
 import 'Database/db_helper.dart';
 import 'Second_employee_page.dart';
+import 'employee.dart';
+
+
 void main() {
-  runApp(const MaterialApp(
-    home: EmployeeDirectoryApp(),
-  ));
+  runApp(
+    const MaterialApp(
+      home: EmployeeDirectoryApp(),
+      debugShowCheckedModeBanner: false,
+    ),
+  );
 }
 // void main() {
 //   runApp(const EmployeeDirectoryApp());
@@ -36,21 +42,109 @@ class EmployeeDataLoader {
       throw Exception('Failed to load employee');
     }
   }
+ }
+// class EmployeeNamesTab extends StatelessWidget {
+//   const EmployeeNamesTab({super.key,});
+//
+//   // Method to fetch data from API and update the local database
+//   Future<void> refreshData() async {
+//     try {
+//       // Fetch data from the API
+//       final List<Employee> updatedData = await EmployeeDataLoader().loadEmployees();
+//
+//       // Update the local database with the new data
+//       await DatabaseHelper.instance.refreshDatabase(updatedData);
+//     } catch (e) {
+//       print('Error refreshing data: $e');
+//       // Handle the error as needed (e.g., show a dialog, log it, etc.)
+//     }
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return FutureBuilder<List<Employee>>(
+//       // Use a FutureBuilder to display the employee data
+//       future: EmployeeDataLoader().loadEmployees(),
+//       builder: (context, snapshot) {
+//         if (snapshot.connectionState == ConnectionState.waiting) {
+//           return const Center(child: CircularProgressIndicator());
+//         } else if (snapshot.hasError) {
+//           return Text('Error: ${snapshot.error}');
+//         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+//           return const Text('No employees available.');
+//         } else {
+//           final employees = snapshot.data!;
+//           return Column(
+//             children: [
+//               // Add a RefreshIndicator to enable pull-to-refresh
+//               RefreshIndicator(
+//                 onRefresh: refreshData,
+//                 child: ListView.builder(
+//                   itemCount: employees.length,
+//                   itemBuilder: (context, index) {
+//                     final employee = employees[index];
+//                     return ListTile(
+//                       title: Text('${employee.firstName} ${employee.lastName}'),
+//                       subtitle: Text(employee.email),
+//                       onTap: () {
+//                         // Navigate to the EmployeeDetailsTab with the selected employee
+//                         Navigator.push(
+//                           context,
+//                           MaterialPageRoute(
+//                             builder: (context) => EmployeeDetailsTab(employee: employee),
+//                           ),
+//                         );
+//                       },
+//                       trailing: IconButton(
+//                         icon: const Icon(Icons.edit),
+//                         onPressed: () {
+//                           // Navigate to the EditEmployeeScreen with the selected employee
+//                           Navigator.push(
+//                             context,
+//                             MaterialPageRoute(
+//                               builder: (context) => EditEmployeeScreen(employee: employee),
+//                             ),
+//                           );
+//                         },
+//                       ),
+//                     );
+//                   },
+//                 ),
+//               ),
+//             ],
+//           );
+//         }
+//       },
+//     );
+//   }
+// }
+class EmployeeNamesTab extends StatefulWidget {
+  const EmployeeNamesTab({Key? key}) : super(key: key);
+
+  @override
+  _EmployeeNamesTabState createState() => _EmployeeNamesTabState();
 }
-class EmployeeNamesTab extends StatelessWidget {
-  const EmployeeNamesTab({super.key,});
+
+class _EmployeeNamesTabState extends State<EmployeeNamesTab> {
+  List<Employee> employeeList = [];
 
   // Method to fetch data from API and update the local database
-  Future<void> refreshData() async {
+  Future<void> _refreshData() async {
     try {
-      // Fetch data from the API
-      final List<Employee> updatedData = await EmployeeDataLoader().loadEmployees();
+      List<Employee> employees = await DatabaseHelper.instance.getAllEmployees();
 
-      // Update the local database with the new data
-      await DatabaseHelper.instance.refreshDatabase(updatedData);
+      // Update the state with the fetched employees
+      setState(() {
+        // Update this list with the fetched employees
+        employeeList = employees;
+      });
+
+      // Optionally, you can show a success message or perform other UI updates
+      // ...
+
     } catch (e) {
+      // Handle errors, e.g., show an error message or log the error
       print('Error refreshing data: $e');
-      // Handle the error as needed (e.g., show a dialog, log it, etc.)
     }
   }
 
@@ -72,7 +166,7 @@ class EmployeeNamesTab extends StatelessWidget {
             children: [
               // Add a RefreshIndicator to enable pull-to-refresh
               RefreshIndicator(
-                onRefresh: refreshData,
+                onRefresh: _refreshData,
                 child: ListView.builder(
                   itemCount: employees.length,
                   itemBuilder: (context, index) {
